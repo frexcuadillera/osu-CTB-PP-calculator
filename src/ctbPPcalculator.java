@@ -56,7 +56,7 @@ public class ctbPPcalculator {
 	 */
 	private void initialize() {
 		frmCtbPpCalculator = new JFrame();
-		frmCtbPpCalculator.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\++++++\\osu ctb pp calculator\\icon.png"));
+		frmCtbPpCalculator.setIconImage(Toolkit.getDefaultToolkit().getImage("icon.png"));
 		frmCtbPpCalculator.setTitle("CTB PP CALCULATOR");
 		frmCtbPpCalculator.setResizable(false);
 		frmCtbPpCalculator.setBounds(100, 100, 491, 410);
