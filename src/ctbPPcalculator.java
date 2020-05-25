@@ -147,8 +147,8 @@ public class ctbPPcalculator {
 		JButton btnCalculate = new JButton("CALCULATE");
 		btnCalculate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				double final_value,stars_value,ar_value,mcombo_value,combo_value,acc_value,miss_value;
-				double lengthbonus;
+				double final_value,stars_value,ar_value,ar_bonus,mcombo_value,hidden_bonus,combo_value,acc_value,miss_value;
+				double length_bonus;
 				DecimalFormat df2 = new DecimalFormat(".##");
 				
 				try {
@@ -184,24 +184,37 @@ public class ctbPPcalculator {
 					// Conversion from Star rating to pp
 					final_value = Math.pow(((5*(stars_value)/ 0.0049)-4),2)/100000; 
 					// Length Bonus
-					lengthbonus = (0.95 + 0.4 * Math.min(1.0, mcombo_value / 3000.0) + (mcombo_value > 3000 ? Math.log10(mcombo_value / 3000.0) * 0.5 : 0.0));
-					final_value *= lengthbonus;
+					length_bonus = (0.95 + 0.3 * Math.min(1.0, mcombo_value / 2500.0) + (mcombo_value > 2500 ? Math.log10(mcombo_value / 2500.0) * 0.475 : 0.0));
+					final_value *= length_bonus;
 					// Miss Penalty
 					final_value *= Math.pow(0.97, miss_value);
 					// Not FC combo penalty
 					final_value *= Math.pow(combo_value/mcombo_value,0.8);
 					// AR Bonus
+					ar_bonus = 1;
 					if (ar_value>9)
-						final_value*= 1+  0.1 * (ar_value - 9.0);
+						ar_bonus+= 0.1 * (ar_value - 9.0);
+					if (ar_value>10)
+						ar_bonus+= 0.1 * (ar_value - 10.0);
 					if (ar_value<8)
-						final_value*= 1+  0.025 * (8.0 - ar_value);
+						ar_bonus+= 0.025 * (8.0 - ar_value);
+					
+					final_value *= ar_bonus;
+					
+					// Hidden bonus
+					hidden_bonus = 1;
+					if (ar_value>10)
+						hidden_bonus= 1.01 + 0.04 * (11 - Math.min(11,ar_value));
+					else
+						hidden_bonus= 1.05 + 0.075 * (10 - ar_value);
+					
 					// Acc Penalty
 					final_value *= Math.pow(acc_value/100, 5.5);
 					
 					nomodpp.setText(String.valueOf(df2.format(final_value))+"pp");
-					hdpp.setText(String.valueOf(df2.format(final_value* (1.05 + 0.075 * (10.0 - Math.min(10, ar_value)))))+"pp");
-					flpp.setText(String.valueOf(df2.format(final_value* 1.35 * lengthbonus))+"pp");
-					hdflpp.setText(String.valueOf(df2.format(final_value* 1.35 * lengthbonus*(1.05 + 0.075 * (10.0 - Math.min(10, ar_value)))))+"pp");
+					hdpp.setText(String.valueOf(df2.format(final_value * hidden_bonus))+"pp");
+					flpp.setText(String.valueOf(df2.format(final_value * 1.35 * length_bonus))+"pp");
+					hdflpp.setText(String.valueOf(df2.format(final_value * 1.35 * length_bonus * hidden_bonus))+"pp");
 					
 					
 				}catch(Exception calc) {
